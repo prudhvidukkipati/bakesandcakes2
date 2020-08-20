@@ -4,21 +4,25 @@ let carts = document.querySelectorAll(".cart");
 let products = [
     {
         name:'carrot',
+        tag:1,
         price:12,
         incart:0
     },
     {
         name:'tomato',
+        tag:2,
         price:15,
         incart:0
     },
     {
         name:'cabbage',
+        tag:3,
         price:18,
         incart:0
     },
     {
         name:'beetroot',
+        tag:4,
         price:22,
         incart:0
     }
@@ -112,29 +116,31 @@ function displayCart(){
     
     let productContainer = document.querySelector(".table-body");
     if (cartItems && productContainer){
+        
         productContainer.innerHTML = '';
         
         Object.values(cartItems).map(item => {
+          
             productContainer.innerHTML+=`
             
 <tr>
                           <td class="thumbnail-img">
-                                  <a href="#">
+                                  <a >
 									<img class="img-fluid" src="images/img-pro-02.jpg" alt="" />
 								</a>
                                     </td>
                                     <td class="name-pr">
-                                        <a href="#">${item.name}</a>
+                                        <a >${item.name}</a>
                                     </td>
                                     <td class="price-pr">
                                         <p>${item.price}</p>
                                     </td>
-                                    <td class="quantity-box"><input type="number" size="4" value="1" min="0" step="1" class="c-input-text qty text">${item.incart}</td>
+                                    <td class="quantity-box">${item.incart}</td>
                                     <td class="total-pr">
                                         <p>Rs:${item.incart * item.price}</p>
                                     </td>
                                     <td class="remove-pr">
-                                        <a href="#">
+                                        <a  onclick=removeItem(${item.tag})>
 									<i class="fas fa-times"></i>
 								</a>
                                     </td>
@@ -147,6 +153,45 @@ function displayCart(){
     
     
     }
+    
+//
+    
+
+    
+    
+    
+    
+    
+function removeItem(Tag){
+   let prods= localStorage.getItem('productsInCart');
+   let cost = localStorage.getItem('totalCost');
+   let numbers = localStorage.getItem('cartNumbers');
+   numbers=parseInt(numbers);
+   cost = parseInt(cost);
+   prods=JSON.parse(prods);
+   
+   for (i=0;i<products.length;i++){
+       if (products[i].tag == Tag){
+          
+           cost = cost - (parseInt(prods[products[i].name].price)* parseInt(prods[products[i].name].incart));
+           numbers = numbers - parseInt(prods[products[i].name].incart);
+           delete prods[products[i].name];
+           
+       }
+   }
+   
+   localStorage.setItem('productsInCart',JSON.stringify(prods));
+   localStorage.setItem('totalCost',cost);
+   localStorage.setItem('cartNumbers',numbers);
+   onLoadCartNumbers();
+   displayCart();
+   billingCheckout();
+   
+
+ }
+
+
+
     
 
 function billingCheckout(){
@@ -188,6 +233,12 @@ function billingCheckout(){
     
     
 }
+
+
+ 
+ 
+    
+
 
 
 onLoadCartNumbers();
