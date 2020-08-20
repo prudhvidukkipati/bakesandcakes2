@@ -50,6 +50,7 @@ var pages =require('./routes/pages.js');
 app.use('/',pages);
 app.use('/bakery',pages);
 app.use('/cart',pages);
+app.use('/checkout',pages);
 
 
 

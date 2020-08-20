@@ -15,6 +15,10 @@ router.get('/cart', function(req, res) {
  res.render('cart');
 });
 
+router.get('/checkout', function(req, res) {
+ res.render('checkout');
+});
+
 
 // export
 module.exports = router;

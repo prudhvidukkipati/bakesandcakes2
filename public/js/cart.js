@@ -135,12 +135,14 @@ function displayCart(){
                                     <td class="price-pr">
                                         <p>${item.price}</p>
                                     </td>
-                                    <td class="quantity-box">${item.incart}</td>
+                                    <td class="" style="text-align: center" >
+                                        <ion-icon onclick=decrease(${item.tag}) name="arrow-back-circle" ></ion-icon><span class="para" >&nbsp;&nbsp;${item.incart}&nbsp;&nbsp;</span><ion-icon onclick=increase(${item.tag}) name="arrow-forward-circle" ></ion-icon>
+                                    </td>
                                     <td class="total-pr">
                                         <p>Rs:${item.incart * item.price}</p>
                                     </td>
                                     <td class="remove-pr">
-                                        <a  onclick=removeItem(${item.tag})>
+                                        <a onclick=removeItem(${item.tag})>
 									<i class="fas fa-times"></i>
 								</a>
                                     </td>
@@ -155,10 +157,64 @@ function displayCart(){
     }
     
 //
+function decrease(Tag){
     
+   
+    let prods= localStorage.getItem('productsInCart');
+    let cost = localStorage.getItem('totalCost');
+    let numbers = localStorage.getItem('cartNumbers');
+    numbers=parseInt(numbers);
+    cost = parseInt(cost);
+    prods=JSON.parse(prods);
+    for (i=0;i<products.length;i++){
+       if (products[i].tag == Tag){
+          if(prods[products[i].name].incart>0){
+           cost = cost - (parseInt(prods[products[i].name].price));
+           prods[products[i].name].incart-= 1;
+           numbers = numbers - 1;
+          }
+           
+           
+           
+       }
+   }
+   
+   localStorage.setItem('productsInCart',JSON.stringify(prods));
+   localStorage.setItem('totalCost',cost);
+   localStorage.setItem('cartNumbers',numbers);
+   onLoadCartNumbers();
+   displayCart();
+   billingCheckout();
+    
+    }
 
     
+function increase(Tag){
     
+    let prods= localStorage.getItem('productsInCart');
+    let cost = localStorage.getItem('totalCost');
+    let numbers = localStorage.getItem('cartNumbers');
+    numbers=parseInt(numbers);
+    cost = parseInt(cost);
+    prods=JSON.parse(prods);
+    for (i=0;i<products.length;i++){
+       if (products[i].tag == Tag){
+          
+           cost = cost + (parseInt(prods[products[i].name].price));
+           prods[products[i].name].incart+= 1
+           numbers = numbers + 1;
+           
+           
+       }
+   }
+   
+   localStorage.setItem('productsInCart',JSON.stringify(prods));
+   localStorage.setItem('totalCost',cost);
+   localStorage.setItem('cartNumbers',numbers);
+   onLoadCartNumbers();
+   displayCart();
+   billingCheckout();
+}    
     
     
     
@@ -197,7 +253,7 @@ function removeItem(Tag){
 function billingCheckout(){
     let cartCost = localStorage.getItem('totalCost');
     let productContainer2 = document.querySelector(".order-box");
-    if(cartCost){
+    if(cartCost>0){
         productContainer2.innerHTML=`
  <h3>Order summary</h3>
                         <div class="d-flex">
@@ -225,7 +281,9 @@ function billingCheckout(){
                         <div class="d-flex gr-total">
                             <h5>Grand Total</h5>
                             <div class="ml-auto h5">Rs:${cartCost} </div>
-                        </div>
+                        </div><hr> </div>
+                        <div class="col-12 d-flex shopping-box"> <a href="checkout" class="ml-auto btn hvr-hover">Place Order</a> </div>
+                    
                         <hr>`;
     }else{
         productContainer2.innerHTML='';
